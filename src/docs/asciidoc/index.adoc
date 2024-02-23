@@ -1,0 +1,10 @@
+= Sample RestDocs
+:doctype: book
+:toc: left
+:toclevels: 3
+:source-highlighter: highlightjs
+:highlightjs-theme: atom-one-dark-reasonable
+:sectlinks:
+
+include::{snippets}/sample-save/http-request.adoc[]
+include::{snippets}/sample-save/http-response.adoc[]
