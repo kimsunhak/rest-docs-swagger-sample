@@ -5,6 +5,9 @@ import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.fasterxml.jackson.databind.ObjectMapper
+import jwp.shower.library.RestDocsUtils
+import jwp.shower.library.RestDocsUtils.Companion.requestPreprocessor
+import jwp.shower.library.RestDocsUtils.Companion.responsePreprocessor
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -28,38 +31,40 @@ class SampleApiDocs(
     fun save() {
         // given
         val sampleRequest = SampleRequest(
-            "최재형",
-            32
+            "김선학",
+            26
         )
 
         val json = objectMapper.writeValueAsString(sampleRequest)
 
         mockMvc.perform(
             RestDocumentationRequestBuilders.post("/v1/sample")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+        )
             .andExpect(status().isOk())
             .andDo(
                 MockMvcRestDocumentationWrapper.document(
-                "sample-save",
-                Preprocessors.preprocessRequest(),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
-                resource(
-                    ResourceSnippetParameters.builder()
-                        .description("sample-save")
-                        .requestFields(
-                            fieldWithPath("name").description("이름"),
-                            fieldWithPath("age").description("나이"),
-                        )
-                        .responseFields(
-                            FieldDescriptors().and(
+                    "sample-save",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("sample-save")
+                            .requestFields(
                                 fieldWithPath("name").description("이름"),
-                                fieldWithPath("age").description("나이")
+                                fieldWithPath("age").description("나이"),
                             )
-                        )
-                        .build()
+                            .responseFields(
+                                FieldDescriptors().and(
+                                    fieldWithPath("name").description("이름"),
+                                    fieldWithPath("age").description("나이")
+                                )
+                            )
+                            .build()
+                    )
                 )
-            ))
+            )
     }
 
 }
