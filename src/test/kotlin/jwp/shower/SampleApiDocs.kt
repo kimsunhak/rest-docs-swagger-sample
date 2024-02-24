@@ -1,9 +1,7 @@
 package jwp.shower
 
-import com.epages.restdocs.apispec.FieldDescriptors
-import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper
+import com.epages.restdocs.apispec.*
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
-import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.fasterxml.jackson.databind.ObjectMapper
 import jwp.shower.library.RestDocsUtils
 import jwp.shower.library.RestDocsUtils.Companion.requestPreprocessor
@@ -55,12 +53,14 @@ class SampleApiDocs(
                                 fieldWithPath("name").description("이름"),
                                 fieldWithPath("age").description("나이"),
                             )
+                            .requestSchema(Schema.schema("SampleRequest"))
                             .responseFields(
                                 FieldDescriptors().and(
                                     fieldWithPath("name").description("이름"),
                                     fieldWithPath("age").description("나이")
                                 )
                             )
+                            .responseSchema(Schema.schema("SampleResponse"))
                             .build()
                     )
                 )

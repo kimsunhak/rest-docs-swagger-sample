@@ -1,3 +1,4 @@
+import com.epages.restdocs.apispec.gradle.OpenApi3Extension
 import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -71,23 +72,22 @@ tasks.register<Test>("restDocsTest") {
 	}
 }
 
-tasks.withType<GenerateSwaggerUI> {
-    dependsOn("openapi3")
-}
-
-tasks.register<Copy>("copySwagger") {
-    delete("src/main/resources/static/docs/openapi3.json")
-    from("build/resources/main/static/docs/openapi3.json")
-    into("src/main/resources/static/docs")
-    dependsOn("openapi3")
+tasks.register<Copy>("copyRestDocsWithSwagger") {
+    doFirst {
+        delete("src/main/resources/static/docs/${property("openapi3JsonName")}.json")
+    }
+    from("${property("openapi3OutDirectory")}/${property("openapi3JsonName")}.json")
+    into("${property("openapi3OutDirectory")}")
+    dependsOn("asciidoctor", "openapi3")
 }
 
 openapi3 {
     setServer("http://localhost:8080")
-    title = "Sample RestDocs Swagger"
-    description = "Sample RestDocs"
-    version = "0.1"
+    title = "${property("openapi3Title")}"
+    description = "${property("openapi3Description")}"
+    version = "${property("openapi3DocsVersion")}"
     format = "json"
-    outputDirectory = "build/resources/main/static/docs"
+    outputFileNamePrefix = "${property("openapi3JsonName")}"
+    outputDirectory = "${property("openapi3OutDirectory")}"
 }
 
