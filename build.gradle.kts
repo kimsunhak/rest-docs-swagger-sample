@@ -1,4 +1,5 @@
 import com.epages.restdocs.apispec.gradle.OpenApi3Extension
+import com.epages.restdocs.apispec.gradle.OpenApi3Task
 import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -73,21 +74,20 @@ tasks.register<Test>("restDocsTest") {
 }
 
 tasks.register<Copy>("copyRestDocsWithSwagger") {
-    doFirst {
-        delete("src/main/resources/static/docs/${property("openapi3JsonName")}.json")
-    }
-    from("${property("openapi3OutDirectory")}/${property("openapi3JsonName")}.json")
-    into("${property("openapi3OutDirectory")}")
     dependsOn("asciidoctor", "openapi3")
+    doFirst {
+        delete("${project.property("openapi3IntoDirectory")}/${project.property("openapi3JsonName")}.json")
+    }
+    from("${project.property("openapi3OutDirectory")}/${project.property("openapi3JsonName")}.json")
+    into("${project.property("openapi3IntoDirectory")}")
 }
 
 openapi3 {
     setServer("http://localhost:8080")
-    title = "${property("openapi3Title")}"
-    description = "${property("openapi3Description")}"
-    version = "${property("openapi3DocsVersion")}"
+    title = "${project.property("openapi3Title")}"
+    description = "${project.property("openapi3Description")}"
+    version = "${project.property("openapi3DocsVersion")}"
     format = "json"
-    outputFileNamePrefix = "${property("openapi3JsonName")}"
-    outputDirectory = "${property("openapi3OutDirectory")}"
+    outputFileNamePrefix = "${project.property("openapi3JsonName")}"
+    outputDirectory = "${project.property("openapi3OutDirectory")}"
 }
-
