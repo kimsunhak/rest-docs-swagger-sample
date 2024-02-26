@@ -55,9 +55,9 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.asciidoctor {
-	configurations("asciidoctorExtension")
+    configurations("asciidoctorExtension")
     baseDirFollowsSourceFile()
-	dependsOn("restDocsTest")
+    dependsOn("restDocsTest")
 }
 
 tasks.test {
@@ -68,17 +68,26 @@ tasks.test {
 
 tasks.register<Test>("restDocsTest") {
     group = "verification"
-	useJUnitPlatform {
-		includeTags("restdocs")
-	}
+    useJUnitPlatform {
+        includeTags("restdocs")
+    }
 }
 
 tasks.register<Copy>("copyRestDocsWithSwagger") {
     dependsOn("asciidoctor", "openapi3")
     doFirst {
-        delete("${project.property("openapi3IntoDirectory")}/${project.property("openapi3JsonName")}.json")
+        delete("${project.property("openapi3IntoDirectory")}/${project.property("openapi3JsonName")}.yaml")
+
+        val jwtSchemes = "  securitySchemes:\n" +
+                "    Authorization:\n" +
+                "      type: http\n" +
+                "      scheme: bearer\n" +
+                "      bearerFormat: JWT\n" +
+                "security:\n" +
+                "  - Authorization: []"
+        file("${project.property("openapi3OutDirectory")}/${project.property("openapi3JsonName")}.yaml").appendText(jwtSchemes)
     }
-    from("${project.property("openapi3OutDirectory")}/${project.property("openapi3JsonName")}.json")
+    from("${project.property("openapi3OutDirectory")}/${project.property("openapi3JsonName")}.yaml")
     into("${project.property("openapi3IntoDirectory")}")
 }
 
@@ -87,7 +96,7 @@ openapi3 {
     title = "${project.property("openapi3Title")}"
     description = "${project.property("openapi3Description")}"
     version = "${project.property("openapi3DocsVersion")}"
-    format = "json"
+    format = "yaml"
     outputFileNamePrefix = "${project.property("openapi3JsonName")}"
     outputDirectory = "${project.property("openapi3OutDirectory")}"
 }

@@ -1,6 +1,7 @@
 package jwp.shower
 
 import com.epages.restdocs.apispec.*
+import com.epages.restdocs.apispec.ResourceDocumentation.headerWithName
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.fasterxml.jackson.databind.ObjectMapper
 import jwp.shower.library.RestDocsUtils
@@ -37,6 +38,7 @@ class SampleApiDocs(
 
         mockMvc.perform(
             RestDocumentationRequestBuilders.post("/v1/sample")
+                .header("Authorization", "Bearer {AccessToken}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
         )
